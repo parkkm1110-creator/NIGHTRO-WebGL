@@ -30,11 +30,10 @@ jobs:
     steps:
       - name: Download WebGL release archive
         env:
-          GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.release_tag || 'Webgl-V1' }}
         run: |
           mkdir -p _site
-          gh release download "$TAG" --repo "${{ github.repository }}" --pattern "Build_011.zip" --dir /tmp
+          curl -fL "https://github.com/${{ github.repository }}/releases/download/${TAG}/Build_011.zip" -o /tmp/Build_011.zip
           unzip -q /tmp/Build_011.zip -d _site
 
       - name: Setup Pages
