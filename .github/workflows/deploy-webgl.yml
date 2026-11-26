@@ -34,7 +34,16 @@ jobs:
         run: |
           mkdir -p _site
           curl -fL "https://github.com/${{ github.repository }}/releases/download/${TAG}/Build_011.zip" -o /tmp/Build_011.zip
-          unzip -q /tmp/Build_011.zip -d _site
+          python3 -c "import os, shutil, zipfile
+          with zipfile.ZipFile('/tmp/Build_011.zip') as z:
+              for m in z.infolist():
+                  name = m.filename.replace('\\\\', '/').lstrip('/')
+                  if not name or name.endswith('/'): continue
+                  dest = os.path.join('_site', name)
+                  os.makedirs(os.path.dirname(dest), exist_ok=True)
+                  with z.open(m) as src, open(dest, 'wb') as dst:
+                      shutil.copyfileobj(src, dst)"
+          ls -la _site
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
