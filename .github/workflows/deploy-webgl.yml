@@ -1,14 +1,16 @@
 name: Deploy WebGL (BETA V1) to GitHub Pages
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-webgl.yml'
   workflow_dispatch:
     inputs:
       release_tag:
         description: 'Release tag containing Build_011.zip'
         required: true
-        default: 'webgl-v1'
+        default: 'Webgl-V1'
 
 permissions:
   contents: read
@@ -29,7 +31,7 @@ jobs:
       - name: Download WebGL release archive
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.event.release.tag_name || inputs.release_tag || 'webgl-v1' }}
+          TAG: ${{ inputs.release_tag || 'Webgl-V1' }}
         run: |
           mkdir -p _site
           gh release download "$TAG" --repo "${{ github.repository }}" --pattern "Build_011.zip" --dir /tmp
